@@ -6,6 +6,12 @@
 ###   2. Crear cliente  → anotar el id devuelto
 ###   3. Crear orden    → anotar el id devuelto
 ###   4. Listar / Obtener / PDF / Actualizar / Eliminar
+###
+### TEMPLATE EXCEL (diseño del documento):
+###   A. GET  /ordenes/config/excel  → descargá el Excel base
+###   B. Editá la columna VALOR y guardá el archivo
+###   C. POST /ordenes/config/excel  → subí el Excel editado
+###   D. GET  /ordenes/{id}/pdf      → el PDF ya usa el nuevo diseño
 ### ============================================================
 
 # --- Variables (definidas en http-client.private.env.json) ---
@@ -175,5 +181,29 @@ Authorization: Bearer {{token}}
 
 ### 12 · Error 401 — sin token (debe devolver 403)
 GET http://127.0.0.1:8000/ordenes
+
+###
+
+### ── TEMPLATE EXCEL (diseño del documento) ──────────────────
+
+### 13 · Descargar el Excel de configuración del template
+###      Abrilo en Excel / LibreOffice, editá la columna VALOR y guardalo
+GET http://127.0.0.1:8000/ordenes/config/excel
+Authorization: Bearer {{token}}
+
+###
+
+### 14 · Subir el Excel editado para actualizar el diseño del PDF
+###      Reemplazá la ruta con la ubicación real del archivo en tu PC
+POST http://127.0.0.1:8000/ordenes/config/excel
+Authorization: Bearer {{token}}
+Content-Type: multipart/form-data; boundary=boundary123
+
+--boundary123
+Content-Disposition: form-data; name="file"; filename="orden_template_config.xlsx"
+Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+
+< C:/Users/ziSamyy/Downloads/orden_template_config.xlsx
+--boundary123--
 
 ###

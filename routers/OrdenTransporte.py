@@ -1,6 +1,6 @@
 from typing import List
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
 from fastapi.responses import Response
 from sqlalchemy.orm import Session
 
@@ -14,6 +14,7 @@ from schemas.OrdenTransporte import (
     OrdenTransporteUpdate,
 )
 from utils.pdf_orden_transporte import generar_pdf_orden_transporte
+from utils.excel_template import generar_excel_template, leer_excel_y_actualizar_config
 
 orden_route = APIRouter()
 
@@ -156,3 +157,58 @@ def descargar_pdf(orden_id: int, db: Session = Depends(get_db)):
             "Content-Disposition": f'attachment; filename="orden_{orden_id}.pdf"'
         },
     )
+
+
+# ─── configuración del template via Excel ────────────────────────────────────
+
+@orden_route.get(
+    "/ordenes/config/excel",
+    tags=["Ordenes de Transporte — Template"],
+    dependencies=[Depends(JWTBearer())],
+    response_class=Response,
+    summary="Descargar Excel de configuración del template",
+    description=(
+        "Devuelve un archivo .xlsx con toda la configuración visual del documento. "
+        "Editá la columna 'VALOR' y subilo con POST /ordenes/config/excel."
+    ),
+)
+def descargar_template_excel():
+    xlsx_bytes = generar_excel_template()
+    return Response(
+        content=xlsx_bytes,
+        media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        headers={
+            "Content-Disposition": 'attachment; filename="orden_template_config.xlsx"'
+        },
+    )
+
+
+@orden_route.post(
+    "/ordenes/config/excel",
+    tags=["Ordenes de Transporte — Template"],
+    dependencies=[Depends(JWTBearer())],
+    summary="Subir Excel editado para actualizar el template",
+    description=(
+        "Recibe el .xlsx editado, actualiza el archivo JSON de configuración "
+        "y devuelve un resumen de los valores guardados. "
+        "A partir de ese momento todos los PDFs nuevos usarán el nuevo diseño."
+    ),
+)
+async def subir_template_excel(file: UploadFile = File(...)):
+    if not file.filename.endswith(".xlsx"):
+        raise HTTPException(
+            status_code=400,
+            detail="El archivo debe ser un .xlsx exportado desde Excel o LibreOffice.",
+        )
+    content = await file.read()
+    try:
+        cfg_actualizado = leer_excel_y_actualizar_config(content)
+    except Exception as e:
+        raise HTTPException(
+            status_code=422,
+            detail=f"Error al procesar el Excel: {str(e)}",
+        )
+    return {
+        "msg": "Template actualizado correctamente. Los próximos PDFs usarán el nuevo diseño.",
+        "config": cfg_actualizado,
+    }
