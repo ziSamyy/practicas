@@ -1,0 +1,90 @@
+{
+  "_instrucciones": {
+    "colores": "Valores entre 0.0 (negro) y 1.0 (blanco). Ej: [1,1,1]=blanco, [0,0,0]=negro, [0.87,0.87,0.87]=gris claro",
+    "medidas": "Todas las medidas están en milímetros (mm)",
+    "porcentajes": "Los valores de tipo 'porcentaje' van entre 0.0 y 1.0. Ej: 0.60 = 60%"
+  },
+
+  "empresa": {
+    "nombre":    "ADK",
+    "subtitulo": "MAQUINAS ENVASADORAS"
+  },
+
+  "documento": {
+    "titulo":         "ORDEN DE TRANSPORTE",
+    "codigo":         "ADK S.R.L.  RG 1.1",
+    "revision":       "Revisión: 00",
+    "fecha_vigencia": "Fecha de vigencia: 05/08/03",
+    "hoja":           "Hoja: 1/1"
+  },
+
+  "secciones": {
+    "datos_destinatario": "Datos del destinatario",
+    "descripcion_orden":  "Descripción de la Orden:",
+    "valores_enviados":   "Valores enviados:",
+    "banco":              "Banco",
+    "numero":             "Número",
+    "importe":            "Importe"
+  },
+
+  "columna_derecha": {
+    "fila_1_label": "Valor Declarado",
+    "fila_2_label": "Efectivo enviado:",
+    "fila_3_label": "Total (Valores + Efvo.):",
+    "fila_4_label": "Flete a cargo de:",
+    "fila_5_label": "Transporte:"
+  },
+
+  "pie_pagina": {
+    "texto_izquierda": "Emitio la Orden:",
+    "texto_centro":    "Original",
+    "texto_derecha":   "PARA EL TRANSPORTE"
+  },
+
+  "colores": {
+    "barra_seccion":   [0.87, 0.87, 0.87],
+    "borde":           [0, 0, 0],
+    "texto_principal": [0, 0, 0]
+  },
+
+  "dimensiones": {
+    "margen_izquierdo":   10,
+    "ancho_contenido":    190,
+    "altura_encabezado":  25,
+    "alto_barra_seccion": 6,
+    "alto_fila_datos":    12,
+    "alto_descripcion":   70,
+    "alto_fila_financiera": 8,
+    "filas_valores_enviados": 4,
+    "alto_pie":           10,
+    "ancho_caja_fecha":   38
+  },
+
+  "tabla_financiera": {
+    "porcentaje_tabla_izquierda": 0.60,
+    "ancho_col_valores_enviados": 27,
+    "ancho_col_banco":            33,
+    "ancho_col_numero":           25,
+    "porcentaje_label_derecha":   0.55
+  },
+
+  "encabezado_columnas": {
+    "porcentaje_logo":  0.263,
+    "porcentaje_titulo": 0.474
+  },
+
+  "pie_columnas": {
+    "porcentaje_izquierda": 0.30,
+    "porcentaje_centro":    0.40,
+    "porcentaje_derecha":   0.30
+  },
+
+  "fuentes": {
+    "label_size":         7,
+    "valor_size":         8.5,
+    "titulo_size":        11,
+    "subtitulo_size":     8,
+    "descripcion_size":   9,
+    "info_encabezado_size": 7.5
+  }
+}
