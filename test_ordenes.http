@@ -1,0 +1,179 @@
+### ============================================================
+### ORDENES DE TRANSPORTE — Test Suite (PyCharm HTTP Client)
+### ============================================================
+### Flujo recomendado:
+###   1. Login          → copiar el token en http-client.private.env.json
+###   2. Crear cliente  → anotar el id devuelto
+###   3. Crear orden    → anotar el id devuelto
+###   4. Listar / Obtener / PDF / Actualizar / Eliminar
+### ============================================================
+
+# --- Variables (definidas en http-client.private.env.json) ---
+# {
+#   "dev": {
+#     "admin_pass": "...",
+#     "token": "eyJ..."   ← pegá aquí el token tras el login
+#   }
+# }
+
+### 0 · Login — obtenés el Bearer token
+POST http://127.0.0.1:8000/login
+Content-Type: application/json
+
+{
+  "email": "admin@admin.com",
+  "password": "{{admin_pass}}"
+}
+
+###
+
+### ── PRE-REQUISITO: crear un cliente si no tenés uno ────────
+
+### 1 · Crear cliente de ejemplo
+POST http://127.0.0.1:8000/clientes
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "cuit": "30-71607966-6",
+  "name": "PANIFICADORA BELGRANO",
+  "email": "belgrano@panificadora.com",
+  "telefono": "351-6638095",
+  "domicilio": "Mesa y Castro 1758",
+  "ciudad": "Córdoba",
+  "provincia": "Córdoba"
+}
+
+###
+
+### ── ORDENES DE TRANSPORTE ──────────────────────────────────
+
+### 2 · Crear orden completa (con valores enviados)
+POST http://127.0.0.1:8000/ordenes
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "cliente_id": 1,
+  "descripcion": "Entregar bulto (1) en domicilio.",
+  "contacto": "Sebastian Santiago",
+  "movil": "351-5551234",
+  "valores_enviados": [
+    { "banco": "Galicia",  "numero": "00123456", "importe": 15000.00 },
+    { "banco": "Nación",   "numero": "00789012", "importe": 5000.00  },
+    { "banco": "",         "numero": "",          "importe": null     },
+    { "banco": "",         "numero": "",          "importe": null     }
+  ],
+  "valor_declarado": 20000.00,
+  "efectivo_enviado": null,
+  "flete_a_cargo_de": "DESTINO",
+  "transporte": "ARANGO",
+  "emitio_la_orden": "PABLO",
+  "fecha_envio": "2025-12-16"
+}
+
+###
+
+### 3 · Crear orden mínima (sin valores enviados ni efectivo)
+POST http://127.0.0.1:8000/ordenes
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "cliente_id": 1,
+  "descripcion": "Entregar caja (2) con urgencia.",
+  "contacto": "María López",
+  "movil": null,
+  "valores_enviados": null,
+  "valor_declarado": null,
+  "efectivo_enviado": null,
+  "flete_a_cargo_de": "ORIGEN",
+  "transporte": "ANDREANI",
+  "emitio_la_orden": "CARLOS",
+  "fecha_envio": "2026-01-10"
+}
+
+###
+
+### 4 · Listar todas las órdenes
+GET http://127.0.0.1:8000/ordenes
+Authorization: Bearer {{token}}
+
+###
+
+### 5 · Obtener una orden por ID
+GET http://127.0.0.1:8000/ordenes/1
+Authorization: Bearer {{token}}
+
+###
+
+### 6 · Descargar PDF de la orden (responde application/pdf)
+GET http://127.0.0.1:8000/ordenes/1/pdf
+Authorization: Bearer {{token}}
+
+###
+
+### 7 · Actualizar orden completa
+PUT http://127.0.0.1:8000/ordenes/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "cliente_id": 1,
+  "descripcion": "Entregar bulto (1) en domicilio. URGENTE.",
+  "contacto": "Sebastian Santiago",
+  "movil": "351-5559999",
+  "valores_enviados": [
+    { "banco": "BBVA",  "numero": "00111222", "importe": 20000.00 },
+    { "banco": "",      "numero": "",          "importe": null     },
+    { "banco": "",      "numero": "",          "importe": null     },
+    { "banco": "",      "numero": "",          "importe": null     }
+  ],
+  "valor_declarado": 20000.00,
+  "efectivo_enviado": 500.00,
+  "flete_a_cargo_de": "DESTINO",
+  "transporte": "ARANGO",
+  "emitio_la_orden": "PABLO",
+  "fecha_envio": "2025-12-17"
+}
+
+###
+
+### 8 · Eliminar orden por ID
+DELETE http://127.0.0.1:8000/ordenes/1
+Authorization: Bearer {{token}}
+
+###
+
+### ── CASOS DE ERROR ──────────────────────────────────────────
+
+### 9 · Error 404 — orden inexistente
+GET http://127.0.0.1:8000/ordenes/9999
+Authorization: Bearer {{token}}
+
+###
+
+### 10 · Error 404 — PDF de orden inexistente
+GET http://127.0.0.1:8000/ordenes/9999/pdf
+Authorization: Bearer {{token}}
+
+###
+
+### 11 · Error 404 — cliente_id inexistente al crear
+POST http://127.0.0.1:8000/ordenes
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "cliente_id": 9999,
+  "descripcion": "Test cliente inexistente",
+  "emitio_la_orden": "TEST",
+  "fecha_envio": "2026-01-01"
+}
+
+###
+
+### 12 · Error 401 — sin token (debe devolver 403)
+GET http://127.0.0.1:8000/ordenes
+
+###
