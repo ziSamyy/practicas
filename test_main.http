@@ -1,11 +1,54 @@
+POST http://127.0.0.1:8000/login
+Content-Type: application/json
+
+{"email": "admin@admin.com", "password": "92GLbcchPDA6zbMq"}
+
+###
 # Test your FastAPI endpoints
 
-GET http://127.0.0.1:8000/
-Accept: application/json
+POST http://127.0.0.1:8000/login
 
 ###
 
-GET http://127.0.0.1:8000/hello/User
-Accept: application/json
+### Crear documento (reemplazar eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJhZG1pbkBhZG1pbi5jb20iLCJyb2wiOiJBZG1pbmlzdHJhZG9yIiwiZXhwIjoxNzcxOTIxNjc5fQ.FiUJyiU-xi_brIrVzMpJyyLMQxxrlmpKgSR8udea8Hs por el token obtenido en /login)
+POST http://127.0.0.1:8000/documentos
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJhZG1pbkBhZG1pbi5jb20iLCJyb2wiOiJBZG1pbmlzdHJhZG9yIiwiZXhwIjoxNzcxOTIxNjc5fQ.FiUJyiU-xi_brIrVzMpJyyLMQxxrlmpKgSR8udea8Hs
+
+{
+  "cliente_id": 1,
+  "empresa_transporte": "Transportes del Sur S.A.",
+  "a_cargo_de": "Juan Pérez",
+  "items": [
+    {
+      "descripcion": "Servicio de flete - Ruta BA-CBA",
+      "cantidad": 2,
+      "precio_unitario": 15000.00
+    },
+    {
+      "descripcion": "Seguro de carga",
+      "cantidad": 1,
+      "precio_unitario": 3500.00
+    }
+  ]
+}
+
+###
+
+### Listar todos los documentos
+GET http://127.0.0.1:8000/documentos
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJhZG1pbkBhZG1pbi5jb20iLCJyb2wiOiJBZG1pbmlzdHJhZG9yIiwiZXhwIjoxNzcxOTIxNjc5fQ.FiUJyiU-xi_brIrVzMpJyyLMQxxrlmpKgSR8udea8Hs
+
+###
+
+### Obtener un documento por ID
+GET http://127.0.0.1:8000/documentos/1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJhZG1pbkBhZG1pbi5jb20iLCJyb2wiOiJBZG1pbmlzdHJhZG9yIiwiZXhwIjoxNzcxOTIxNjc5fQ.FiUJyiU-xi_brIrVzMpJyyLMQxxrlmpKgSR8udea8Hs
+
+###
+
+### Descargar PDF del documento
+GET http://127.0.0.1:8000/documentos/1/pdf
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJhZG1pbkBhZG1pbi5jb20iLCJyb2wiOiJBZG1pbmlzdHJhZG9yIiwiZXhwIjoxNzcxOTIxNjc5fQ.FiUJyiU-xi_brIrVzMpJyyLMQxxrlmpKgSR8udea8Hs
 
 ###

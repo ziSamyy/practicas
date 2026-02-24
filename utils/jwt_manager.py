@@ -1,8 +1,13 @@
 import os
 
+from dotenv import load_dotenv
 from jwt import encode, decode
 
-SECRET_KEY = os.getenv("JWT_SECRET_KEY", "cambia-esto-en-produccion-minimo-32-chars!!")
+load_dotenv()
+
+SECRET_KEY = os.getenv("JWT_SECRET_KEY")
+if not SECRET_KEY:
+    raise RuntimeError("JWT_SECRET_KEY environment variable is not set")
 ALGORITHM = "HS256"
 EXPIRE_MINUTES = 30
 

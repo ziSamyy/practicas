@@ -24,14 +24,11 @@ def require_admin(token_data: dict = Depends(JWTBearer())) -> dict:
 def login(user: UserLogin, db: Session = Depends(get_db)):
     db_user = db.query(UserModel).filter(UserModel.email == user.email).first()
 
-    if not db_user:
-        raise HTTPException(status_code=404, detail="Usuario no encontrado")
-
-    if not bcrypt.checkpw(
+    if not db_user or not bcrypt.checkpw(
         user.password.get_secret_value().encode("utf-8"),
         db_user.password.encode("utf-8"),
     ):
-        raise HTTPException(status_code=401, detail="Contraseña incorrecta")
+        raise HTTPException(status_code=401, detail="Credenciales incorrectas")
 
     token_data = {"id": db_user.id, "email": db_user.email, "rol": db_user.rol}
     token = create_token(token_data)
